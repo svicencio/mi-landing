@@ -93,7 +93,18 @@
     <section id="contacto" class="fade-in">
       <h2>Contacto</h2>
       <p>¿Tienes una idea o proyecto? Conversemos.</p>
-      <button>Contactar</button>
+      <form
+        name="contact"
+        method="POST"
+        data-netlify="true"
+        action="/gracias.html"
+      >
+        <input type="hidden" name="form-name" value="contact" />
+        <input type="text" name="name" placeholder="Tu nombre" required />
+        <input type="email" name="email" placeholder="Tu email" required />
+        <textarea name="message" placeholder="Tu mensaje" required></textarea>
+        <button type="submit">Enviar</button>
+      </form>
     </section>
 
     <!-- ======================
