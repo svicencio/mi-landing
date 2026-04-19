@@ -97,7 +97,6 @@
         name="contact"
         method="POST"
         netlify
-        action="/gracias.html"
       >
         <input type="hidden" name="form-name" value="contact" />
         <input type="text" name="name" placeholder="Tu nombre" required />
@@ -106,7 +105,12 @@
         <button type="submit">Enviar</button>
       </form>
     </section>
-
+    <div id="modal" class="modal hidden">
+      <div class="modal-content">
+        <p id="modal-message">Mensaje enviado</p>
+        <button id="close-modal">Cerrar</button>
+      </div>
+    </div>
     <!-- ======================
          SCRIPTS
     ====================== -->
