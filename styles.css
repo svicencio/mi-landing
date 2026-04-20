@@ -270,3 +270,15 @@ button:hover {
 .hidden {
   display: none;
 }
+
+/* estilo para errores en el formulario */
+
+.error {
+  color: red;
+  font-size: 12px;
+  height: 14px;
+}
+
+.input-error {
+  border: 1px solid red;
+}

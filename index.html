@@ -93,15 +93,16 @@
     <section id="contacto" class="fade-in">
       <h2>Contacto</h2>
       <p>¿Tienes una idea o proyecto? Conversemos.</p>
-      <form
-        name="contact"
-        method="POST"
-        netlify
-      >
-        <input type="hidden" name="form-name" value="contact" />
+      <form name="contact" method="POST" netlify>
         <input type="text" name="name" placeholder="Tu nombre" required />
+        <!-- contenedor para errores -->
+        <small class="error" id="error-name"></small>
+
         <input type="email" name="email" placeholder="Tu email" required />
+        <small class="error" id="error-email"></small>
+
         <textarea name="message" placeholder="Tu mensaje" required></textarea>
+        <small class="error" id="error-message"></small>
         <button type="submit">Enviar</button>
       </form>
     </section>
