@@ -310,12 +310,20 @@ button:disabled {
   }
 }
 
-#box {
-  max-width: 300px;
-  margin: 20px;
+/* widget del dolar para el menu */
+
+.dolar-widget {
+  font-size: 14px;
+  margin-left: auto; /* lo empuja a la derecha */
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }
 
-input, button {
-  display: block;
-  margin-top: 10px;
+.dolar-widget strong {
+  font-weight: 600;
+}
+
+#dolar-value {
+  color: #0a7;
 }

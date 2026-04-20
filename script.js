@@ -21,6 +21,8 @@ const nameInput = form.querySelector('input[name="name"]');
 const emailInput = form.querySelector('input[name="email"]');
 const messageInput = form.querySelector('textarea[name="message"]');
 
+const dolarEl = document.getElementById("dolar-value");
+
 /* ======================
    2. UI (MODAL + LOADING)
 ====================== */
@@ -44,6 +46,22 @@ function setLoading(state) {
     btnText.textContent = "Enviar";
     spinner.classList.add("hidden");
     inputs.forEach(i => i.disabled = false);
+  }
+}
+
+// Funcion API para traer el valor del dolar
+
+async function getDolar() {
+  try {
+    const res = await fetch("https://mindicador.cl/api/dolar");
+    const data = await res.json();
+
+    const valor = data.serie[0].valor;
+
+    dolarEl.textContent = "$ " + Math.round(valor);
+  } catch (error) {
+    dolarEl.textContent = "No disponible";
+    console.error(error);
   }
 }
 
@@ -99,6 +117,8 @@ function validateForm() {
 /* ======================
    4. EVENTOS
 ====================== */
+
+getDolar();
 
 // menú
 toggle.addEventListener("click", () => {
