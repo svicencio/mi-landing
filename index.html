@@ -103,7 +103,10 @@
 
         <textarea name="message" placeholder="Tu mensaje" required></textarea>
         <small class="error" id="error-message"></small>
-        <button type="submit">Enviar</button>
+        <button type="submit" id="submit-btn">
+          <span id="btn-text">Enviar</span>
+          <span id="spinner" class="spinner hidden"></span>
+        </button>
       </form>
     </section>
     <div id="modal" class="modal hidden">
