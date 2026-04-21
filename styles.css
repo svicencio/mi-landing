@@ -226,7 +226,8 @@ form {
   max-width: 400px;
 }
 
-input, textarea {
+input,
+textarea {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -254,7 +255,7 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -343,4 +344,9 @@ button:disabled {
 
 .card {
   margin-bottom: 8px;
+}
+
+mark {
+  background: #ffe58a;
+  padding: 0 2px;
 }

@@ -28,6 +28,9 @@ const dolarEl = document.getElementById("dolar-value");
 const buttons = document.querySelectorAll(".filters button");
 const cards = document.querySelectorAll(".card");
 
+// filtro por texto
+const searchInput = document.getElementById("search-input");
+
 /* ======================
    2. UI (MODAL + LOADING)
 ====================== */
@@ -46,11 +49,11 @@ function setLoading(state) {
   if (state) {
     btnText.textContent = "Enviando";
     spinner.classList.remove("hidden");
-    inputs.forEach(i => i.disabled = true);
+    inputs.forEach((i) => (i.disabled = true));
   } else {
     btnText.textContent = "Enviar";
     spinner.classList.add("hidden");
-    inputs.forEach(i => i.disabled = false);
+    inputs.forEach((i) => (i.disabled = false));
   }
 }
 
@@ -78,27 +81,46 @@ async function getDolar() {
 // funcion filtros de servicios
 
 let currentFilter = localStorage.getItem("filter") || "all";
+let searchTerm = "";
 
-function applyFilter(filter) {
-  currentFilter = filter;
+function applyFilter() {
+  // guardar filtro
+  localStorage.setItem("filter", currentFilter);
 
-  // guardar preferencia
-  localStorage.setItem("filter", filter);
-
-  // UI botones
-  buttons.forEach(btn => {
-    btn.classList.toggle("active", btn.dataset.filter === filter);
+  // botones activos
+  buttons.forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.filter === currentFilter);
   });
 
-  // mostrar/ocultar cards
-  cards.forEach(card => {
-    const match =
-      filter === "all" || card.dataset.category === filter;
+  cards.forEach((card) => {
+    const categoryMatch =
+      currentFilter === "all" || card.dataset.category === currentFilter;
+
+    const originalText = card.dataset.original.toLowerCase();
+    const searchMatch = originalText.includes(searchTerm);
+
+    const match = categoryMatch && searchMatch;
 
     card.style.display = match ? "block" : "none";
+
+    // 👉 aplicar highlight
+    if (match) {
+      const highlighted = highlightText(card.dataset.original, searchTerm);
+      card.innerHTML = highlighted;
+    } else {
+      // restaurar contenido original
+      card.innerHTML = card.dataset.original;
+    }
   });
 }
 
+// funcion para resaltar el texto de busqueda
+function highlightText(text, term) {
+  if (!term) return text;
+
+  const regex = new RegExp(`(${term})`, "gi");
+  return text.replace(regex, "<mark>$1</mark>");
+}
 
 /* ======================
    3. VALIDACIÓN
@@ -147,10 +169,16 @@ function validateForm() {
   return validateName() && validateEmail() && validateMessage();
 }
 
-
 /* ======================
    4. EVENTOS
 ====================== */
+
+// recuerda el texto de las cards primero
+cards.forEach((card) => {
+  card.dataset.original = card.textContent;
+});
+
+applyFilter();
 
 getDolar(); // al cargar
 
@@ -163,14 +191,14 @@ toggle.addEventListener("click", () => {
 
 // animaciones
 const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
+  entries.forEach((entry) => {
     if (entry.isIntersecting) {
       entry.target.classList.add("show");
     }
   });
 });
 
-elements.forEach(el => observer.observe(el));
+elements.forEach((el) => observer.observe(el));
 
 // validación en vivo
 nameInput.addEventListener("input", validateName);
@@ -207,14 +235,21 @@ form.addEventListener("submit", function (e) {
 });
 
 // filtros de servicio
-buttons.forEach(btn => {
+buttons.forEach((btn) => {
   btn.addEventListener("click", () => {
-    applyFilter(btn.dataset.filter);
+    currentFilter = btn.dataset.filter;
+    applyFilter();
   });
 });
 
-// inicializar
-applyFilter(currentFilter);
+searchInput.addEventListener("input", () => {
+  searchTerm = searchInput.value.toLowerCase();
+
+  // 👉 resetear filtro
+  currentFilter = "all";
+
+  applyFilter();
+});
 
 // cerrar modal
 closeBtn.addEventListener("click", hideModal);
