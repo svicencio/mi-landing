@@ -92,6 +92,7 @@ function applyFilter() {
     btn.classList.toggle("active", btn.dataset.filter === currentFilter);
   });
 
+  // recorrer las cartas y destacar
   cards.forEach((card) => {
     const categoryMatch =
       currentFilter === "all" || card.dataset.category === currentFilter;
@@ -103,7 +104,7 @@ function applyFilter() {
 
     card.style.display = match ? "block" : "none";
 
-    // 👉 aplicar highlight
+    // aplicar highlight de busqueda
     if (match) {
       const highlighted = highlightText(card.dataset.original, searchTerm);
       card.innerHTML = highlighted;
@@ -245,7 +246,7 @@ buttons.forEach((btn) => {
 searchInput.addEventListener("input", () => {
   searchTerm = searchInput.value.toLowerCase();
 
-  // 👉 resetear filtro
+  // resetear filtro
   currentFilter = "all";
 
   applyFilter();
