@@ -21,7 +21,12 @@ const nameInput = form.querySelector('input[name="name"]');
 const emailInput = form.querySelector('input[name="email"]');
 const messageInput = form.querySelector('textarea[name="message"]');
 
+// dolar
 const dolarEl = document.getElementById("dolar-value");
+
+// filtros servicios
+const buttons = document.querySelectorAll(".filters button");
+const cards = document.querySelectorAll(".card");
 
 /* ======================
    2. UI (MODAL + LOADING)
@@ -51,18 +56,47 @@ function setLoading(state) {
 
 // Funcion API para traer el valor del dolar
 
+let isLoading = false;
+
 async function getDolar() {
+  if (isLoading) return;
+  isLoading = true;
+
   try {
     const res = await fetch("https://mindicador.cl/api/dolar");
     const data = await res.json();
 
     const valor = data.serie[0].valor;
-
     dolarEl.textContent = "$ " + Math.round(valor);
-  } catch (error) {
+  } catch {
     dolarEl.textContent = "No disponible";
-    console.error(error);
+  } finally {
+    isLoading = false;
   }
+}
+
+// funcion filtros de servicios
+
+let currentFilter = localStorage.getItem("filter") || "all";
+
+function applyFilter(filter) {
+  currentFilter = filter;
+
+  // guardar preferencia
+  localStorage.setItem("filter", filter);
+
+  // UI botones
+  buttons.forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.filter === filter);
+  });
+
+  // mostrar/ocultar cards
+  cards.forEach(card => {
+    const match =
+      filter === "all" || card.dataset.category === filter;
+
+    card.style.display = match ? "block" : "none";
+  });
 }
 
 
@@ -118,7 +152,9 @@ function validateForm() {
    4. EVENTOS
 ====================== */
 
-getDolar();
+getDolar(); // al cargar
+
+setInterval(getDolar, 60000); // cada 60 segundos
 
 // menú
 toggle.addEventListener("click", () => {
@@ -169,6 +205,16 @@ form.addEventListener("submit", function (e) {
       setLoading(false);
     });
 });
+
+// filtros de servicio
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    applyFilter(btn.dataset.filter);
+  });
+});
+
+// inicializar
+applyFilter(currentFilter);
 
 // cerrar modal
 closeBtn.addEventListener("click", hideModal);

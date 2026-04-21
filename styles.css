@@ -327,3 +327,20 @@ button:disabled {
 #dolar-value {
   color: #0a7;
 }
+
+/* estilo para los filtros de servicios */
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.filters button.active {
+  background: #111;
+  color: #fff;
+}
+
+.card {
+  margin-bottom: 8px;
+}
