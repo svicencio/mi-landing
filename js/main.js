@@ -1,6 +1,11 @@
 /* ======================
    1. REFERENCIAS
 ====================== */
+
+import { getDolar } from "./api.js";
+import { applyFilter } from "./filters.js";
+import { showModal, hideModal, setLoading } from "./ui.js";
+
 const toggle = document.getElementById("menu-toggle");
 const nav = document.getElementById("nav-links");
 
@@ -34,47 +39,17 @@ const searchInput = document.getElementById("search-input");
 /* ======================
    2. UI (MODAL + LOADING)
 ====================== */
-function showModal(text) {
-  message.textContent = text;
-  modal.classList.remove("hidden");
-}
-
-function hideModal() {
-  modal.classList.add("hidden");
-}
-
-function setLoading(state) {
-  submitBtn.disabled = state;
-
-  if (state) {
-    btnText.textContent = "Enviando";
-    spinner.classList.remove("hidden");
-    inputs.forEach((i) => (i.disabled = true));
-  } else {
-    btnText.textContent = "Enviar";
-    spinner.classList.add("hidden");
-    inputs.forEach((i) => (i.disabled = false));
-  }
-}
+// movido a ui.js
 
 // Funcion API para traer el valor del dolar
+// funcion exportada a api.js
+async function updateDolar() {
+  const valor = await getDolar();
 
-let isLoading = false;
-
-async function getDolar() {
-  if (isLoading) return;
-  isLoading = true;
-
-  try {
-    const res = await fetch("https://mindicador.cl/api/dolar");
-    const data = await res.json();
-
-    const valor = data.serie[0].valor;
-    dolarEl.textContent = "$ " + Math.round(valor);
-  } catch {
+  if (valor) {
+    dolarEl.textContent = `$${valor}`;
+  } else {
     dolarEl.textContent = "No disponible";
-  } finally {
-    isLoading = false;
   }
 }
 
@@ -83,45 +58,9 @@ async function getDolar() {
 let currentFilter = localStorage.getItem("filter") || "all";
 let searchTerm = "";
 
-function applyFilter() {
-  // guardar filtro
-  localStorage.setItem("filter", currentFilter);
 
-  // botones activos
-  buttons.forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.filter === currentFilter);
-  });
 
-  // recorrer las cartas y destacar
-  cards.forEach((card) => {
-    const categoryMatch =
-      currentFilter === "all" || card.dataset.category === currentFilter;
 
-    const originalText = card.dataset.original.toLowerCase();
-    const searchMatch = originalText.includes(searchTerm);
-
-    const match = categoryMatch && searchMatch;
-
-    card.style.display = match ? "block" : "none";
-
-    // aplicar highlight de busqueda
-    if (match) {
-      const highlighted = highlightText(card.dataset.original, searchTerm);
-      card.innerHTML = highlighted;
-    } else {
-      // restaurar contenido original
-      card.innerHTML = card.dataset.original;
-    }
-  });
-}
-
-// funcion para resaltar el texto de busqueda
-function highlightText(text, term) {
-  if (!term) return text;
-
-  const regex = new RegExp(`(${term})`, "gi");
-  return text.replace(regex, "<mark>$1</mark>");
-}
 
 /* ======================
    3. VALIDACIÓN
@@ -179,11 +118,18 @@ cards.forEach((card) => {
   card.dataset.original = card.textContent;
 });
 
-applyFilter();
+applyFilter({ buttons, cards, currentFilter, searchTerm });
+// funcion para resaltar el texto de busqueda
+function highlightText(text, term) {
+  if (!term) return text;
 
-getDolar(); // al cargar
+  const regex = new RegExp(`(${term})`, "gi");
+  return text.replace(regex, "<mark>$1</mark>");
+}
 
-setInterval(getDolar, 60000); // cada 60 segundos
+updateDolar(); // al cargar
+
+setInterval(updateDolar, 60000); // cada 60 segundos
 
 // menú
 toggle.addEventListener("click", () => {
@@ -211,11 +157,11 @@ form.addEventListener("submit", function (e) {
   e.preventDefault();
 
   if (!validateForm()) {
-    showModal("Corrige los errores antes de enviar");
+    showModal("Corrige los errores antes de enviar", modal, message);
     return;
   }
 
-  setLoading(true);
+  setLoading(true, submitBtn, spinner, btnText, inputs);
 
   const data = new FormData(form);
 
@@ -224,14 +170,14 @@ form.addEventListener("submit", function (e) {
     body: data,
   })
     .then(() => {
-      showModal("Mensaje enviado correctamente");
+      showModal("Mensaje enviado", modal, message);
       form.reset();
     })
     .catch(() => {
       showModal("Error al enviar");
     })
     .finally(() => {
-      setLoading(false);
+      setLoading(false, submitBtn, spinner, btnText, inputs);
     });
 });
 
@@ -239,18 +185,17 @@ form.addEventListener("submit", function (e) {
 buttons.forEach((btn) => {
   btn.addEventListener("click", () => {
     currentFilter = btn.dataset.filter;
-    applyFilter();
+
+    applyFilter({ buttons, cards, currentFilter, searchTerm });
   });
 });
 
 searchInput.addEventListener("input", () => {
   searchTerm = searchInput.value.toLowerCase();
-
-  // resetear filtro
   currentFilter = "all";
 
-  applyFilter();
+  applyFilter({ buttons, cards, currentFilter, searchTerm });
 });
 
 // cerrar modal
-closeBtn.addEventListener("click", hideModal);
+closeBtn.addEventListener("click", () => hideModal(modal));
