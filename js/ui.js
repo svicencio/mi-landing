@@ -14,9 +14,11 @@ export function setLoading(state, submitBtn, spinner, btnText, inputs) {
     btnText.textContent = "Enviando";
     spinner.classList.remove("hidden");
     inputs.forEach((i) => (i.disabled = true));
+    console.log("setLoading:", state);
   } else {
     btnText.textContent = "Enviar";
     spinner.classList.add("hidden");
     inputs.forEach((i) => (i.disabled = false));
+    console.log("setLoading:", state);
   }
 }

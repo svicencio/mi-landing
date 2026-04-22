@@ -5,13 +5,21 @@
 import { getDolar } from "./api.js";
 import { applyFilter } from "./filters.js";
 import { showModal, hideModal, setLoading } from "./ui.js";
+import {
+  validateName,
+  validateEmail,
+  validateMessage,
+  validateForm,
+} from "./validation.js";
 
 const toggle = document.getElementById("menu-toggle");
 const nav = document.getElementById("nav-links");
 
 const elements = document.querySelectorAll(".fade-in");
 
-const form = document.querySelector("form");
+if (!form) {
+  console.error("Formulario no encontrado");
+}
 const modal = document.getElementById("modal");
 const closeBtn = document.getElementById("close-modal");
 const message = document.getElementById("modal-message");
@@ -39,6 +47,23 @@ const searchInput = document.getElementById("search-input");
 /* ======================
    2. UI (MODAL + LOADING)
 ====================== */
+
+// agrupar inicialización
+function init() {
+  setLoading(false, submitBtn, spinner, btnText, inputs);
+
+  cards.forEach((card) => {
+    card.dataset.original = card.textContent;
+  });
+
+  applyFilter({ buttons, cards, currentFilter, searchTerm });
+
+  updateDolar();
+  setInterval(updateDolar, 60000);
+}
+
+init();
+
 // movido a ui.js
 
 // Funcion API para traer el valor del dolar
@@ -58,56 +83,11 @@ async function updateDolar() {
 let currentFilter = localStorage.getItem("filter") || "all";
 let searchTerm = "";
 
-
-
-
-
 /* ======================
    3. VALIDACIÓN
+
+   Todo en validation.js
 ====================== */
-function showError(input, text) {
-  const errorEl = document.getElementById("error-" + input.name);
-  errorEl.textContent = text;
-  input.classList.add("input-error");
-}
-
-function clearError(input) {
-  const errorEl = document.getElementById("error-" + input.name);
-  errorEl.textContent = "";
-  input.classList.remove("input-error");
-}
-
-function validateName() {
-  if (nameInput.value.trim().length < 3) {
-    showError(nameInput, "Mínimo 3 caracteres");
-    return false;
-  }
-  clearError(nameInput);
-  return true;
-}
-
-function validateEmail() {
-  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
-  if (!valid) {
-    showError(emailInput, "Email inválido");
-    return false;
-  }
-  clearError(emailInput);
-  return true;
-}
-
-function validateMessage() {
-  if (messageInput.value.trim().length < 10) {
-    showError(messageInput, "Mensaje muy corto");
-    return false;
-  }
-  clearError(messageInput);
-  return true;
-}
-
-function validateForm() {
-  return validateName() && validateEmail() && validateMessage();
-}
 
 /* ======================
    4. EVENTOS
@@ -119,13 +99,6 @@ cards.forEach((card) => {
 });
 
 applyFilter({ buttons, cards, currentFilter, searchTerm });
-// funcion para resaltar el texto de busqueda
-function highlightText(text, term) {
-  if (!term) return text;
-
-  const regex = new RegExp(`(${term})`, "gi");
-  return text.replace(regex, "<mark>$1</mark>");
-}
 
 updateDolar(); // al cargar
 
@@ -145,18 +118,20 @@ const observer = new IntersectionObserver((entries) => {
   });
 });
 
-elements.forEach((el) => observer.observe(el));
+if (elements.length) {
+  elements.forEach((el) => observer.observe(el));
+}
 
-// validación en vivo
-nameInput.addEventListener("input", validateName);
-emailInput.addEventListener("input", validateEmail);
-messageInput.addEventListener("input", validateMessage);
+// validación en vivo solo si se interactua con el elemento
+nameInput.addEventListener("input", () => validateName(nameInput));
+emailInput.addEventListener("input", () => validateEmail(emailInput));
+messageInput.addEventListener("input", () => validateMessage(messageInput));
 
 // submit
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  if (!validateForm()) {
+  if (!validateForm({ nameInput, emailInput, messageInput })) {
     showModal("Corrige los errores antes de enviar", modal, message);
     return;
   }
