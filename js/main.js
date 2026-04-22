@@ -17,8 +17,10 @@ const nav = document.getElementById("nav-links");
 
 const elements = document.querySelectorAll(".fade-in");
 
+const form = document.querySelector("form");
+
 if (!form) {
-  console.error("Formulario no encontrado");
+  console.warn("Formulario no encontrado");
 }
 const modal = document.getElementById("modal");
 const closeBtn = document.getElementById("close-modal");
@@ -48,12 +50,17 @@ const searchInput = document.getElementById("search-input");
    2. UI (MODAL + LOADING)
 ====================== */
 
+// funcion filtros de servicios
+
+let currentFilter = localStorage.getItem("filter") || "all";
+let searchTerm = "";
+
 // agrupar inicialización
 function init() {
   setLoading(false, submitBtn, spinner, btnText, inputs);
 
   cards.forEach((card) => {
-    card.dataset.original = card.textContent;
+    card.dataset.original = card.innerHTML;
   });
 
   applyFilter({ buttons, cards, currentFilter, searchTerm });
@@ -78,11 +85,6 @@ async function updateDolar() {
   }
 }
 
-// funcion filtros de servicios
-
-let currentFilter = localStorage.getItem("filter") || "all";
-let searchTerm = "";
-
 /* ======================
    3. VALIDACIÓN
 
@@ -95,7 +97,7 @@ let searchTerm = "";
 
 // recuerda el texto de las cards primero
 cards.forEach((card) => {
-  card.dataset.original = card.textContent;
+  card.dataset.original = card.innerHTML;
 });
 
 applyFilter({ buttons, cards, currentFilter, searchTerm });

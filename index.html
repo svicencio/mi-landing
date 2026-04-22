@@ -6,6 +6,10 @@
     ====================== -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Desarrollo web moderno, automatización e IA"
+    />
     <title>Mi Landing</title>
 
     <!-- ======================
@@ -26,9 +30,9 @@
     <!-- ======================
          NAVBAR
     ====================== -->
-    <nav class="navbar">
-      <div class="logo">MiProyecto</div>
-      <div id="dolar-box" class="dolar-widget">
+    <nav class="navbar" aria-label="Navegación principal">
+      <a href="#inicio" class="logo">MiProyecto</a>
+      <div id="dolar-box" class="dolar-widget" aria-live="polite">
         <span>Dólar:</span>
         <strong id="dolar-value">Cargando...</strong>
       </div>
@@ -41,15 +45,19 @@
       </ul>
 
       <!-- Menú hamburguesa (móvil) -->
-      <div class="menu-toggle" id="menu-toggle">☰</div>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menú">
+        ☰
+      </button>
     </nav>
 
     <!-- ======================
          HERO / INICIO
     ====================== -->
     <header id="inicio">
-      <h1>Mi Proyecto</h1>
-      <p>Landing moderna desde cero</p>
+      <div class="hero-content">
+        <h1>Mi Proyecto</h1>
+        <p>Landing moderna desde cero</p>
+      </div>
     </header>
 
     <!-- ======================
@@ -80,28 +88,52 @@
         <button data-filter="games">Juegos</button>
       </div>
 
-      <input type="text" id="search-input" placeholder="Buscar..." />
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Buscar servicios..."
+        aria-label="Buscar servicios"
+      />
 
       <div class="cards">
-        <div class="card" data-category="web">Proyecto Web</div>
-        <div class="card" data-category="ia">Herramienta IA</div>
-        <div class="card" data-category="games">Juego Indie</div>
-        <div class="card" data-category="web">Landing Moderna</div>
-      </div>
-      <div class="cards">
-        <div class="card">
+        <div class="card" data-category="web">
           <h3>Desarrollo Web</h3>
-          <p>Landing pages, sitios corporativos y aplicaciones modernas.</p>
+          <p>Sitios modernos, rápidos y adaptados a cualquier dispositivo.</p>
         </div>
 
-        <div class="card">
+        <div class="card" data-category="web">
+          <h3>Landing Pages</h3>
+          <p>Diseñadas para convertir visitas en clientes.</p>
+        </div>
+
+        <div class="card" data-category="ia">
           <h3>Automatización</h3>
-          <p>Optimización de tareas repetitivas con tecnología.</p>
+          <p>Optimiza procesos y reduce tareas repetitivas.</p>
         </div>
 
-        <div class="card">
-          <h3>Consultoría</h3>
-          <p>Asesoría en soluciones tecnológicas y arquitectura.</p>
+        <div class="card" data-category="ia">
+          <h3>Integración de APIs</h3>
+          <p>Conecta servicios externos y potencia tu aplicación.</p>
+        </div>
+
+        <div class="card" data-category="games">
+          <h3>Desarrollo de Juegos</h3>
+          <p>Experiencias interactivas para web y dispositivos.</p>
+        </div>
+
+        <div class="card" data-category="games">
+          <h3>Gamificación</h3>
+          <p>Convierte procesos en experiencias atractivas.</p>
+        </div>
+
+        <div class="card" data-category="web">
+          <h3>Optimización Web</h3>
+          <p>Mejora rendimiento, SEO y experiencia de usuario.</p>
+        </div>
+
+        <div class="card" data-category="ia">
+          <h3>Asistentes Inteligentes</h3>
+          <p>Implementación de chatbots y soluciones con IA.</p>
         </div>
       </div>
     </section>
@@ -113,13 +145,30 @@
       <h2>Contacto</h2>
       <p>¿Tienes una idea o proyecto? Conversemos.</p>
       <form name="contact" method="POST" netlify>
-        <input type="text" name="name" placeholder="Tu nombre" required />
+        <p hidden>
+          <label>Don’t fill this out: <input name="bot-field" /></label>
+        </p>
+        <input type="hidden" name="form-name" value="contact" />
+        <label for="name">Nombre</label>
+        <input
+          type="text"
+          name="name"
+          placeholder="Tu nombre"
+          autocomplete="name"
+          required
+        />
         <!-- contenedor para errores -->
         <small class="error" id="error-name"></small>
-
-        <input type="email" name="email" placeholder="Tu email" required />
+        <label for="email">Correo</label>
+        <input
+          type="email"
+          name="email"
+          placeholder="Tu email"
+          autocomplete="email"
+          required
+        />
         <small class="error" id="error-email"></small>
-
+        <label for="message">Mensaje</label>
         <textarea name="message" placeholder="Tu mensaje" required></textarea>
         <small class="error" id="error-message"></small>
         <button type="submit" id="submit-btn">
@@ -127,11 +176,37 @@
           <span id="spinner" class="spinner hidden"></span>
         </button>
       </form>
+      <div class="contact-extra">
+        <div class="contact-info">
+          <p><strong>Dirección:</strong> Viña del Mar, Chile</p>
+          <p><strong>Email:</strong> contacto@miproyecto.cl</p>
+          <p><strong>Teléfono:</strong> +56 9 1234 5678</p>
+
+          <div class="socials">
+            <a href="#">LinkedIn</a>
+            <a href="#">GitHub</a>
+            <a href="#">Instagram</a>
+          </div>
+        </div>
+
+        <div class="map">
+          <iframe
+            src="https://www.google.com/maps?q=Viña+del+Mar&output=embed"
+            loading="lazy"
+          ></iframe>
+        </div>
+      </div>
     </section>
-    <div id="modal" class="modal hidden">
+    <div
+      id="modal"
+      class="modal hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-message"
+    >
       <div class="modal-content">
         <p id="modal-message">Mensaje enviado</p>
-        <button id="close-modal">Cerrar</button>
+        <button id="close-modal" aria-label="Cerrar modal">Cerrar</button>
       </div>
     </div>
     <!-- ======================

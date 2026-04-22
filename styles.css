@@ -120,24 +120,35 @@ button:hover {
    CARDS (SERVICIOS)
 ======================== */
 .cards {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
 }
 
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  width: 260px;
-
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-  transition: 0.3s;
+.cards {
+  flex-direction: column;
+  align-items: center;
 }
 
 .card:hover {
   transform: translateY(-5px);
+}
+
+.card {
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #111;
+
+  border: 1px solid #e5e7eb; /* 👈 borde suave */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* ========================
@@ -179,9 +190,8 @@ button:hover {
     padding: 20px;
   }
 
-  .cards {
-    flex-direction: column;
-    align-items: center;
+  .contact-extra {
+    grid-template-columns: 1fr;
   }
 
   /* NAV LINKS MOBILE */
@@ -234,17 +244,16 @@ textarea {
   font-family: inherit;
 }
 
-button {
-  padding: 12px;
-  border: none;
-  background-color: #111;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
 button:hover {
   background-color: #333;
+}
+
+#contacto form {
+  max-width: 500px;
+  margin: 0 auto; /* 👈 centra horizontal */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* modal feedback inmediato sin salir al enviar formulario */
@@ -348,4 +357,48 @@ button:disabled {
 mark {
   background: #ffe58a;
   padding: 0 2px;
+}
+
+#search-input {
+  display: block;
+  margin: 20px auto; /* separa arriba/abajo y centra */
+  padding: 10px;
+  max-width: 400px;
+  width: 100%;
+}
+
+
+/* Seccion de contacto */
+
+.contact-extra {
+  margin-top: 40px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+
+  align-items: start;
+}
+
+.contact-info {
+  text-align: left;
+}
+
+.socials {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.socials a {
+  text-decoration: none;
+  color: #ff7a18;
+  font-weight: 500;
+}
+
+.map iframe {
+  width: 100%;
+  height: 250px;
+  border: none;
+  border-radius: 10px;
 }

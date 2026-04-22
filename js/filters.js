@@ -20,7 +20,7 @@ export function applyFilter({ buttons, cards, currentFilter, searchTerm }) {
     const categoryMatch =
       currentFilter === "all" || card.dataset.category === currentFilter;
 
-    const originalText = card.dataset.original.toLowerCase();
+    const originalText = card.textContent.toLowerCase();
     const searchMatch = originalText.includes(searchTerm);
 
     const match = categoryMatch && searchMatch;
