@@ -2,15 +2,18 @@
    1. REFERENCIAS
 ====================== */
 
-import { getDolar } from "./api.js";
-import { applyFilter } from "./filters.js";
-import { showModal, hideModal, setLoading } from "./ui.js";
+import { getDolar } from "./modules/api.js";
+import { applyFilter } from "./modules/filters.js";
+import { showModal, hideModal, setLoading } from "./modules/ui.js";
 import {
   validateName,
   validateEmail,
   validateMessage,
   validateForm,
-} from "./validation.js";
+} from "./modules/validation.js";
+
+const noResults = document.getElementById("no-results");
+const resultsCount = document.getElementById("results-count");
 
 const toggle = document.getElementById("menu-toggle");
 const nav = document.getElementById("nav-links");
@@ -63,7 +66,7 @@ function init() {
     card.dataset.original = card.innerHTML;
   });
 
-  applyFilter({ buttons, cards, currentFilter, searchTerm });
+  applyFilter({ buttons, cards, currentFilter, searchTerm, resultsCount, noResults});
 
   updateDolar();
   setInterval(updateDolar, 60000);
@@ -100,7 +103,7 @@ cards.forEach((card) => {
   card.dataset.original = card.innerHTML;
 });
 
-applyFilter({ buttons, cards, currentFilter, searchTerm });
+applyFilter({ buttons, cards, currentFilter, searchTerm, resultsCount, noResults });
 
 updateDolar(); // al cargar
 
@@ -163,7 +166,7 @@ buttons.forEach((btn) => {
   btn.addEventListener("click", () => {
     currentFilter = btn.dataset.filter;
 
-    applyFilter({ buttons, cards, currentFilter, searchTerm });
+    applyFilter({ buttons, cards, currentFilter, searchTerm, resultsCount, noResults });
   });
 });
 
@@ -171,7 +174,7 @@ searchInput.addEventListener("input", () => {
   searchTerm = searchInput.value.toLowerCase();
   currentFilter = "all";
 
-  applyFilter({ buttons, cards, currentFilter, searchTerm });
+  applyFilter({ buttons, cards, currentFilter, searchTerm, resultsCount, noResults });
 });
 
 // cerrar modal

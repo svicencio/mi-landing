@@ -6,34 +6,40 @@ function highlightText(text, term) {
   return text.replace(regex, "<mark>$1</mark>");
 }
 
-export function applyFilter({ buttons, cards, currentFilter, searchTerm }) {
-  // guardar filtro
-  localStorage.setItem("filter", currentFilter);
+export function applyFilter({ buttons, cards, currentFilter, searchTerm, resultsCount, noResults}) {
+  let visibleCount = 0;
 
-  // botones activos
   buttons.forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.filter === currentFilter);
   });
 
-  // recorrer las cartas y destacar
   cards.forEach((card) => {
     const categoryMatch =
       currentFilter === "all" || card.dataset.category === currentFilter;
 
-    const originalText = card.textContent.toLowerCase();
+    const originalText = card.dataset.original.toLowerCase();
     const searchMatch = originalText.includes(searchTerm);
 
     const match = categoryMatch && searchMatch;
 
     card.style.display = match ? "block" : "none";
 
-    // aplicar highlight de busqueda
     if (match) {
+      visibleCount++;
+
       const highlighted = highlightText(card.dataset.original, searchTerm);
       card.innerHTML = highlighted;
     } else {
-      // restaurar contenido original
       card.innerHTML = card.dataset.original;
     }
   });
+
+  // 👇 NUEVO: feedback UI
+  resultsCount.textContent = `${visibleCount} resultado(s)`;
+
+  if (visibleCount === 0) {
+    noResults.classList.remove("hidden");
+  } else {
+    noResults.classList.add("hidden");
+  }
 }
